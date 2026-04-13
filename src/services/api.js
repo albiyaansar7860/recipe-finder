@@ -44,9 +44,20 @@ export const getRecipeById = async (id) => {
 };
 
 // --- MOCK AUTH SERVICE ---
+const INITIAL_USERS = [
+  { id: 1, name: "Admin User", email: "admin@recipefinder.com", password: "admin123", role: "admin" }
+];
+
 export const authService = {
   login: (email, password) => {
-    const users = JSON.parse(localStorage.getItem("users") || "[]");
+    let users = JSON.parse(localStorage.getItem("users"));
+    
+    // Seed default admin if no users exist
+    if (!users || users.length === 0) {
+      users = INITIAL_USERS;
+      localStorage.setItem("users", JSON.stringify(users));
+    }
+
     const user = users.find(u => u.email === email && u.password === password);
     if (user) {
       localStorage.setItem("currentUser", JSON.stringify(user));
@@ -56,11 +67,17 @@ export const authService = {
   },
   
   register: (name, email, password) => {
-    const users = JSON.parse(localStorage.getItem("users") || "[]");
+    let users = JSON.parse(localStorage.getItem("users") || "[]");
+    
+    // Ensure initial users are present if empty
+    if (users.length === 0) {
+      users = [...INITIAL_USERS];
+    }
+
     if (users.find(u => u.email === email)) {
       return { success: false, message: "Email already registered" };
     }
-    const newUser = { id: Date.now(), name, email, password, role: "admin" }; // Mocking admin role for dashboard access
+    const newUser = { id: Date.now(), name, email, password, role: "admin" }; 
     users.push(newUser);
     localStorage.setItem("users", JSON.stringify(users));
     return { success: true };
@@ -70,6 +87,7 @@ export const authService = {
   
   logout: () => localStorage.removeItem("currentUser"),
 };
+
 
 // --- LOCAL RECIPE SERVICE (For Admin) ---
 export const recipeService = {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout, Play, Share2, Mail, Instagram, Twitter, Facebook } from 'lucide-react';
+import { Layout, Play, Share2, Mail, Globe, MessageSquare, Heart } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Footer = () => {
@@ -17,13 +17,13 @@ const Footer = () => {
             </p>
             <div className="flex justify-center lg:justify-start gap-4">
               <a href="#" className="w-12 h-12 rounded-full border border-slate-100 flex items-center justify-center text-slate-400 hover:border-emerald-200 hover:text-emerald-500 hover:bg-emerald-50 transition-all shadow-sm">
-                <Instagram size={20} />
+                <Globe size={20} />
               </a>
               <a href="#" className="w-12 h-12 rounded-full border border-slate-100 flex items-center justify-center text-slate-400 hover:border-emerald-200 hover:text-emerald-500 hover:bg-emerald-50 transition-all shadow-sm">
-                <Twitter size={20} />
+                <MessageSquare size={20} />
               </a>
               <a href="#" className="w-12 h-12 rounded-full border border-slate-100 flex items-center justify-center text-slate-400 hover:border-emerald-200 hover:text-emerald-500 hover:bg-emerald-50 transition-all shadow-sm">
-                <Facebook size={20} />
+                <Heart size={20} />
               </a>
             </div>
           </div>
@@ -68,4 +68,5 @@ const Footer = () => {
 };
 
 export default Footer;
+
 
