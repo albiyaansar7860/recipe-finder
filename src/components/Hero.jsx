@@ -1,45 +1,30 @@
 import React from 'react';
-import { Search } from 'lucide-react';
 
-const Hero = ({ onSearch, searchQuery, setSearchQuery }) => {
+const Hero = () => {
   return (
-    <div className="relative h-[500px] w-full flex items-center justify-center overflow-hidden">
-      {/* Background with Blur Overlay */}
-      <div 
-        className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 scale-105"
-        style={{ backgroundImage: "url('/hero-bg.png')" }}
-      >
-        <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px]"></div>
-      </div>
+    <div className="relative py-24 md:py-32 w-full flex items-center justify-center overflow-hidden bg-bg-main border-b border-border">
+      {/* Decorative Background Elements */}
+      <div className="absolute top-0 left-1/4 w-64 h-64 bg-primary/5 rounded-full blur-3xl -translate-y-1/2"></div>
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-secondary/5 rounded-full blur-3xl translate-y-1/2"></div>
 
       {/* Content */}
-      <div className="relative z-10 container text-center text-white space-y-6 px-4">
-        <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight animate-fade-in">
-          Discover <span className="text-primary">Delicious</span> Recipes
+      <div className="relative z-10 container text-center space-y-8 animate-fade">
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-bold uppercase tracking-wider mb-2">
+          <span>🍕</span> Over 5,000+ Recipes
+        </div>
+        
+        <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight max-w-4xl mx-auto">
+          Discover <span className="text-primary">Delicious</span> Recipes <br /> 
+          for Every Occasion
         </h1>
-        <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto animate-fade-in">
-          Search from thousands of curated recipes instantly. From home-style meals to gourmet desserts, find your next favorite dish here.
+        
+        <p className="text-xl md:text-2xl text-text-muted max-w-2xl mx-auto leading-relaxed">
+          The most comprehensive collection of hand-picked recipes from around the world. Start your culinary journey today.
         </p>
 
-        {/* Hero Search Bar */}
-        <div className="max-w-2xl mx-auto w-full mt-10 animate-fade-in" style={{ animationDelay: '0.2s' }}>
-          <div className="flex bg-white rounded-full p-1.5 shadow-2xl focus-within:ring-2 focus-within:ring-primary transition-all">
-            <input
-              type="text"
-              placeholder="What would you like to cook today?"
-              className="flex-1 bg-transparent px-6 py-3 text-text-main outline-none text-lg"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && onSearch()}
-            />
-            <button 
-              onClick={onSearch}
-              className="btn-primary flex items-center gap-2 px-8"
-            >
-              <Search size={20} />
-              <span className="hidden sm:inline">Search</span>
-            </button>
-          </div>
+        <div className="flex flex-wrap items-center justify-center gap-4 pt-6">
+          <button className="btn btn-primary btn-pill px-10 h-14 text-lg">Browse Categories</button>
+          <button className="btn btn-outline btn-pill px-10 h-14 text-lg">Top Rated</button>
         </div>
       </div>
     </div>
@@ -47,3 +32,4 @@ const Hero = ({ onSearch, searchQuery, setSearchQuery }) => {
 };
 
 export default Hero;
+

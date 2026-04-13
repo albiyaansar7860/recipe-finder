@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import RecipeCard from '../components/RecipeCard';
 import { getRecipeById, recipeService } from '../services/api';
-import { Heart, Loader2, Search } from 'lucide-react';
+import { Heart, Loader2, Sparkles, ShoppingBag } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Favorites = () => {
@@ -35,47 +35,61 @@ const Favorites = () => {
   }, []);
 
   return (
-    <div className="container py-12 min-h-[calc(100vh-72px)]">
-      <div className="flex flex-col md:flex-row items-center justify-between mb-12 gap-4">
-        <div className="space-y-2 text-center md:text-left">
-          <h1 className="text-4xl font-extrabold flex items-center justify-center md:justify-start gap-3">
-            <Heart className="text-red-500 fill-red-500" size={36} /> My Favorites
-          </h1>
-          <p className="text-text-muted">You have {favoriteRecipes.length} recipes saved in your collection</p>
-        </div>
-        
-        <Link to="/" className="btn-primary flex items-center gap-2">
-          <Search size={20} /> Discover More
-        </Link>
-      </div>
-
-      {loading ? (
-        <div className="flex flex-col items-center justify-center py-20 gap-4 text-primary">
-          <Loader2 size={48} className="animate-spin" />
-          <p className="font-medium">Loading your favorites...</p>
-        </div>
-      ) : favoriteRecipes.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-          {favoriteRecipes.map((recipe, index) => (
-            <div key={recipe.idMeal || recipe.id} className="animate-fade-in" style={{ animationDelay: `${index * 0.05}s` }}>
-              <RecipeCard recipe={recipe} />
+    <div className="bg-bg-main min-h-[calc(100vh-var(--navbar-height))]">
+      <div className="container py-16 md:py-24">
+        <div className="flex flex-col md:flex-row items-center justify-between mb-16 gap-8 text-center md:text-left">
+          <div className="space-y-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/10 text-red-500 text-xs font-bold uppercase tracking-wider">
+              <Sparkles size={14} /> Your Collection
             </div>
-          ))}
-        </div>
-      ) : (
-        <div className="flex flex-col items-center justify-center py-20 gap-6 text-center border-2 border-dashed border-border rounded-3xl">
-          <div className="w-24 h-24 bg-red-500/10 text-red-500 rounded-full flex items-center justify-center">
-            <Heart size={48} />
+            <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight flex items-center justify-center md:justify-start gap-4">
+              <Heart className="text-red-500 fill-red-500" size={40} /> My Favorites
+            </h1>
+            <p className="text-text-muted text-lg">
+              You have {favoriteRecipes.length} recipes saved in your personal wishlist.
+            </p>
           </div>
-          <div className="space-y-2">
-            <h3 className="text-2xl font-bold">Your collection is empty</h3>
-            <p className="text-text-muted max-w-sm mx-auto">Start exploring and tap the heart icon on any recipe to save it here for later!</p>
-          </div>
-          <Link to="/" className="btn-primary px-8">
-            Start Exploring
+          
+          <Link to="/" className="btn btn-primary btn-pill h-14 px-8 shadow-lg">
+            <ShoppingBag size={20} /> Discover More
           </Link>
         </div>
-      )}
+
+        {loading ? (
+          <div className="grid-main">
+            {[1, 2, 3, 4].map(Math.random).map(i => (
+              <div key={i} className="card-premium h-[400px] bg-white animate-pulse">
+                <div className="h-48 bg-gray-100 rounded-t-2xl"></div>
+                <div className="p-6 space-y-4">
+                  <div className="h-6 bg-gray-100 rounded w-3/4"></div>
+                  <div className="h-4 bg-gray-100 rounded w-full"></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : favoriteRecipes.length > 0 ? (
+          <div className="grid-main animate-fade">
+            {favoriteRecipes.map((recipe) => (
+              <RecipeCard key={recipe.idMeal || recipe.id} recipe={recipe} />
+            ))}
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center py-24 gap-8 text-center bg-white border border-border rounded-[32px] shadow-sm animate-fade">
+            <div className="w-28 h-28 bg-red-500/5 text-red-500 rounded-full flex items-center justify-center">
+              <Heart size={56} strokeWidth={1.5} />
+            </div>
+            <div className="space-y-3">
+              <h3 className="text-3xl font-bold">Your collection is empty</h3>
+              <p className="text-text-muted text-lg max-w-sm mx-auto">
+                Explore our recipes and tap the heart icon to save your next favorite meal here!
+              </p>
+            </div>
+            <Link to="/" className="btn btn-primary btn-pill px-10 h-14 text-lg">
+              Start Exploring
+            </Link>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

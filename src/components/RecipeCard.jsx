@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Heart, Clock, ChevronRight } from 'lucide-react';
+import { Heart, Clock, ArrowRight, ChefHat } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { recipeService } from '../services/api';
 
@@ -21,54 +21,60 @@ const RecipeCard = ({ recipe }) => {
 
   return (
     <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
       whileHover={{ y: -8 }}
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      className="group bg-bg-card rounded-2xl overflow-hidden border border-border hover:border-primary/30 shadow-sm hover:shadow-xl transition-all cursor-pointer"
-      onClick={() => navigate(`/recipe/${recipe.idMeal || recipe.id}`)}
+      className="group card-premium overflow-hidden flex flex-col h-full bg-white"
     >
-      {/* Image Container */}
+      {/* Image Section */}
       <div className="relative aspect-[4/3] overflow-hidden">
         <img 
           src={recipe.strMealThumb || recipe.image} 
           alt={recipe.strMeal || recipe.title} 
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300"></div>
         
+        {/* Category Badge */}
+        <div className="absolute top-4 left-4 z-10">
+          <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/90 backdrop-blur-sm text-primary text-xs font-bold shadow-sm">
+            <ChefHat size={14} />
+            {recipe.strCategory || 'Gourmet'}
+          </span>
+        </div>
+
         {/* Favorite Button */}
         <button 
           onClick={handleToggleFavorite}
-          className={`absolute top-4 right-4 p-2.5 rounded-full backdrop-blur-md transition-all ${
-            isFavorite ? 'bg-red-500 text-white' : 'bg-white/70 text-black hover:bg-white'
+          className={`absolute top-4 right-4 z-10 p-2.5 rounded-full backdrop-blur-md transition-all duration-300 shadow-md ${
+            isFavorite ? 'bg-red-500 text-white scale-110' : 'bg-white/80 text-text-muted hover:bg-white hover:text-red-500'
           }`}
         >
-          <Heart size={20} fill={isFavorite ? 'currentColor' : 'none'} strokeWidth={2.5} />
+          <Heart size={18} fill={isFavorite ? 'currentColor' : 'none'} strokeWidth={2.5} />
         </button>
       </div>
 
-      {/* Content */}
-      <div className="p-5 space-y-3 text-left">
-        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-primary">
-          <span className="px-2 py-1 rounded bg-primary/10">{recipe.strCategory || 'Custom'}</span>
-        </div>
-        
-        <h3 className="text-xl font-bold line-clamp-1 group-hover:text-primary transition-colors">
+      {/* Content Section */}
+      <div className="p-6 flex flex-col flex-1 gap-3">
+        <h3 className="text-xl font-bold line-clamp-1 group-hover:text-primary transition-colors duration-300">
           {recipe.strMeal || recipe.title}
         </h3>
         
-        <p className="text-sm text-text-muted line-clamp-2">
-          {recipe.strInstructions || recipe.description || "Click to see detailed ingredients and instructions for this delicious meal."}
+        <p className="text-sm text-text-muted line-clamp-2 mb-2 leading-relaxed">
+          {recipe.strInstructions || recipe.description || "Discover the secrets of this amazing culinary masterpiece. Click to view full details."}
         </p>
 
-        <div className="pt-4 flex items-center justify-between border-t border-border mt-auto">
-          <div className="flex items-center gap-1.5 text-text-muted text-sm font-medium">
-            <Clock size={16} />
-            <span>25-30 min</span>
+        <div className="mt-auto pt-4 flex items-center justify-between border-t border-border">
+          <div className="flex items-center gap-2 text-text-muted text-xs font-semibold">
+            <Clock size={16} className="text-primary" />
+            <span>25 - 35 min</span>
           </div>
           
-          <button className="flex items-center gap-1 text-sm font-bold text-primary group-hover:translate-x-1 transition-transform">
-            View Details <ChevronRight size={16} />
+          <button 
+            onClick={() => navigate(`/recipe/${recipe.idMeal || recipe.id}`)}
+            className="flex items-center gap-1.5 text-sm font-bold text-primary group-hover:gap-2.5 transition-all"
+          >
+            Details <ArrowRight size={16} />
           </button>
         </div>
       </div>
