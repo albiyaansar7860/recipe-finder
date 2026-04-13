@@ -66,7 +66,7 @@ export const authService = {
     return { success: false, message: "Invalid email or password" };
   },
   
-  register: (name, email, password) => {
+  register: (name, email, password, role = "user") => {
     let users = JSON.parse(localStorage.getItem("users") || "[]");
     
     // Ensure initial users are present if empty
@@ -77,11 +77,12 @@ export const authService = {
     if (users.find(u => u.email === email)) {
       return { success: false, message: "Email already registered" };
     }
-    const newUser = { id: Date.now(), name, email, password, role: "admin" }; 
+    const newUser = { id: Date.now(), name, email, password, role }; 
     users.push(newUser);
     localStorage.setItem("users", JSON.stringify(users));
     return { success: true };
   },
+
   
   getCurrentUser: () => JSON.parse(localStorage.getItem("currentUser")),
   

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Mail, Lock, User, UserPlus, AlertCircle, ArrowLeft, Sparkles } from 'lucide-react';
+import { Mail, Lock, User, UserPlus, AlertCircle, ArrowLeft, Sparkles, Wrench, ShieldCheck } from 'lucide-react';
 import { authService } from '../services/api';
 import { toast } from 'react-hot-toast';
 
@@ -9,7 +9,8 @@ const Register = () => {
     name: '',
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    role: 'user'
   });
   const [error, setError] = useState('');
   const navigate = useNavigate();
@@ -28,7 +29,12 @@ const Register = () => {
       return;
     }
 
-    const { success, message } = authService.register(formData.name, formData.email, formData.password);
+    const { success, message } = authService.register(
+      formData.name, 
+      formData.email, 
+      formData.password,
+      formData.role
+    );
     if (success) {
       toast.success('Registration successful! Welcome!');
       navigate('/');
@@ -87,6 +93,54 @@ const Register = () => {
                   onChange={(e) => setFormData({...formData, email: e.target.value})}
                 />
                 <Mail className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-emerald-500 transition-colors" size={20} />
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <label className="text-sm font-black text-slate-700 ml-1 uppercase tracking-[0.2em] block text-left">Account Type</label>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* User Role Card */}
+                <button
+                  type="button"
+                  onClick={() => setFormData({ ...formData, role: 'user' })}
+                  className={`flex flex-col items-center p-6 rounded-2xl border-2 transition-all duration-300 group ${
+                    formData.role === 'user'
+                      ? 'border-emerald-500 bg-emerald-50 shadow-lg shadow-emerald-100 scale-[1.02]'
+                      : 'border-slate-100 bg-slate-50 hover:border-slate-200'
+                  }`}
+                >
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-3 transition-colors ${
+                    formData.role === 'user' ? 'bg-emerald-500 text-white' : 'bg-white text-slate-400 group-hover:text-slate-600'
+                  }`}>
+                    <User size={24} />
+                  </div>
+                  <h3 className={`font-black uppercase tracking-widest text-sm mb-1 ${
+                    formData.role === 'user' ? 'text-emerald-900' : 'text-slate-900'
+                  }`}>User</h3>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center">Browse and save <br/>recipes</p>
+                </button>
+
+                {/* Admin Role Card */}
+                <button
+                  type="button"
+                  onClick={() => setFormData({ ...formData, role: 'admin' })}
+                  className={`flex flex-col items-center p-6 rounded-2xl border-2 transition-all duration-300 group ${
+                    formData.role === 'admin'
+                      ? 'border-emerald-500 bg-emerald-50 shadow-lg shadow-emerald-100 scale-[1.02]'
+                      : 'border-slate-100 bg-slate-50 hover:border-slate-200'
+                  }`}
+                >
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-3 transition-colors ${
+                    formData.role === 'admin' ? 'bg-emerald-500 text-white' : 'bg-white text-slate-400 group-hover:text-slate-600'
+                  }`}>
+                    <Wrench size={24} />
+                  </div>
+                  <h3 className={`font-black uppercase tracking-widest text-sm mb-1 ${
+                    formData.role === 'admin' ? 'text-emerald-900' : 'text-slate-900'
+                  }`}>Admin</h3>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center">Manage and create <br/>recipes</p>
+                </button>
               </div>
             </div>
 
