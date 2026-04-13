@@ -45,7 +45,6 @@ function App() {
 
         {/* Admin Protected Routes */}
         <Route path="/admin" element={<AdminLayout />}>
-          <index element={<AdminDashboard />} />
           <Route index element={<AdminDashboard />} />
           <Route path="add-recipe" element={<AddRecipe />} />
           <Route path="manage" element={<ManageRecipes />} />
