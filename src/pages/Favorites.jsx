@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import RecipeCard from '../components/RecipeCard';
 import { getRecipeById, recipeService } from '../services/api';
-import { Heart, Loader2, Sparkles, ShoppingBag } from 'lucide-react';
+import { Heart, Loader2, Sparkles, ShoppingBag, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Favorites = () => {
@@ -35,56 +35,59 @@ const Favorites = () => {
   }, []);
 
   return (
-    <div className="bg-bg-main min-h-[calc(100vh-var(--navbar-height))]">
-      <div className="container py-16 md:py-24">
-        <div className="flex flex-col md:flex-row items-center justify-between mb-16 gap-8 text-center md:text-left">
+    <div className="bg-bg-main min-h-[calc(100vh-70px)]">
+      <div className="container-saas py-16 md:py-24">
+        <div className="flex flex-col md:flex-row items-center justify-between mb-16 gap-8 text-center md:text-left animate-fade">
           <div className="space-y-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/10 text-red-500 text-xs font-bold uppercase tracking-wider">
+            <Link to="/" className="inline-flex items-center gap-2 text-emerald-600 font-bold hover:gap-3 transition-all mb-2">
+              <ArrowLeft size={18} /> Back to discover
+            </Link>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-50 text-red-500 text-xs font-bold uppercase tracking-widest">
               <Sparkles size={14} /> Your Collection
             </div>
-            <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight flex items-center justify-center md:justify-start gap-4">
+            <h1 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight flex items-center justify-center md:justify-start gap-4">
               <Heart className="text-red-500 fill-red-500" size={40} /> My Favorites
             </h1>
-            <p className="text-text-muted text-lg">
+            <p className="text-slate-500 text-lg font-medium">
               You have {favoriteRecipes.length} recipes saved in your personal wishlist.
             </p>
           </div>
           
-          <Link to="/" className="btn btn-primary btn-pill h-14 px-8 shadow-lg">
-            <ShoppingBag size={20} /> Discover More
+          <Link to="/" className="btn-primary h-14 px-8 shadow-emerald-200">
+            <ShoppingBag size={20} className="mr-2" /> Discover More
           </Link>
         </div>
 
         {loading ? (
-          <div className="grid-main">
-            {[1, 2, 3, 4].map(Math.random).map(i => (
-              <div key={i} className="card-premium h-[400px] bg-white animate-pulse">
-                <div className="h-48 bg-gray-100 rounded-t-2xl"></div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10">
+            {[1, 2, 3, 4].map(i => (
+              <div key={i} className="bg-white border border-slate-100 rounded-[32px] h-[400px] animate-pulse">
+                <div className="h-56 bg-slate-50 rounded-t-[32px]"></div>
                 <div className="p-6 space-y-4">
-                  <div className="h-6 bg-gray-100 rounded w-3/4"></div>
-                  <div className="h-4 bg-gray-100 rounded w-full"></div>
+                  <div className="h-6 bg-slate-50 rounded w-3/4"></div>
+                  <div className="h-4 bg-slate-50 rounded w-1/2"></div>
                 </div>
               </div>
             ))}
           </div>
         ) : favoriteRecipes.length > 0 ? (
-          <div className="grid-main animate-fade">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10 animate-fade">
             {favoriteRecipes.map((recipe) => (
               <RecipeCard key={recipe.idMeal || recipe.id} recipe={recipe} />
             ))}
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center py-24 gap-8 text-center bg-white border border-border rounded-[32px] shadow-sm animate-fade">
-            <div className="w-28 h-28 bg-red-500/5 text-red-500 rounded-full flex items-center justify-center">
+          <div className="flex flex-col items-center justify-center py-24 gap-8 text-center bg-white border border-slate-100 rounded-[48px] shadow-sm animate-fade">
+            <div className="w-28 h-28 bg-red-50 text-red-500 rounded-full flex items-center justify-center">
               <Heart size={56} strokeWidth={1.5} />
             </div>
-            <div className="space-y-3">
-              <h3 className="text-3xl font-bold">Your collection is empty</h3>
-              <p className="text-text-muted text-lg max-w-sm mx-auto">
+            <div className="space-y-2">
+              <h3 className="text-3xl font-black text-slate-900">Your collection is empty</h3>
+              <p className="text-slate-500 text-lg max-w-sm mx-auto font-medium">
                 Explore our recipes and tap the heart icon to save your next favorite meal here!
               </p>
             </div>
-            <Link to="/" className="btn btn-primary btn-pill px-10 h-14 text-lg">
+            <Link to="/" className="btn-primary px-10 h-14 text-lg">
               Start Exploring
             </Link>
           </div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Settings, Edit2, Trash2, Search, ExternalLink, Plus } from 'lucide-react';
+import { Settings, Edit2, Trash2, Search, ExternalLink, Plus, Package, ArrowLeft } from 'lucide-react';
 import { recipeService } from '../services/api';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
@@ -16,7 +16,7 @@ const ManageRecipes = () => {
     if (window.confirm('Are you sure you want to delete this recipe?')) {
       recipeService.delete(id);
       setRecipes(recipeService.getAll());
-      toast.success('Recipe deleted');
+      toast.success('Recipe deleted successfully');
     }
   };
 
@@ -26,29 +26,34 @@ const ManageRecipes = () => {
   );
 
   return (
-    <div className="space-y-8 animate-fade-in">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-extrabold tracking-tight">Manage Recipes</h1>
-          <p className="text-text-muted">Edit, delete, or review your custom recipes.</p>
+    <div className="space-y-10 animate-fade">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="flex items-center gap-4">
+           <div className="p-3 bg-emerald-50 text-emerald-600 rounded-2xl shadow-sm">
+             <Package size={28} />
+           </div>
+           <div>
+             <h1 className="text-3xl font-black text-slate-900 tracking-tight">Inventory Control</h1>
+             <p className="text-slate-500 font-medium">Edit, delete, or review your custom recipes.</p>
+           </div>
         </div>
-        <Link to="/admin/add-recipe" className="btn-primary flex items-center gap-2 self-start md:self-auto">
+        <Link to="/admin/add-recipe" className="btn-primary h-14 px-8 shadow-emerald-200 flex items-center gap-2">
           <Plus size={20} /> Add New Recipe
         </Link>
       </div>
 
-      <div className="bg-bg-card border border-border rounded-3xl overflow-hidden shadow-sm">
+      <div className="bg-white border border-slate-100 rounded-[32px] overflow-hidden shadow-sm">
         {/* Search Header */}
-        <div className="p-6 border-b border-border bg-bg-main/30">
+        <div className="p-8 border-b border-slate-50">
           <div className="relative max-w-md">
             <input
               type="text"
               placeholder="Filter by title or category..."
-              className="w-full h-12 pl-12 pr-4 bg-bg-card border border-border rounded-xl focus:ring-2 focus:ring-primary outline-none transition-all"
+              className="w-full h-14 pl-14 pr-6 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 focus:bg-white outline-none transition-all font-bold text-slate-700"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={20} />
+            <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
           </div>
         </div>
 
@@ -56,52 +61,59 @@ const ManageRecipes = () => {
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead>
-              <tr className="bg-bg-main/50 text-text-muted text-sm uppercase tracking-wider">
-                <th className="px-6 py-4 font-bold">Recipe</th>
-                <th className="px-6 py-4 font-bold">Category</th>
-                <th className="px-6 py-4 font-bold">Base</th>
-                <th className="px-6 py-4 font-bold text-right">Actions</th>
+              <tr className="bg-slate-50/50 text-slate-400 text-[10px] font-black uppercase tracking-[0.2em]">
+                <th className="px-8 py-5">Recipe Identity</th>
+                <th className="px-8 py-5">Category</th>
+                <th className="px-8 py-5">Storage</th>
+                <th className="px-8 py-5 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-border">
+            <tbody className="divide-y divide-slate-50">
               {filteredRecipes.length > 0 ? filteredRecipes.map((recipe) => (
-                <tr key={recipe.id} className="hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
-                  <td className="px-6 py-4">
+                <tr key={recipe.id} className="hover:bg-slate-50/50 transition-colors group">
+                  <td className="px-8 py-6">
                     <div className="flex items-center gap-4">
                       {recipe.image ? (
-                        <img src={recipe.image} className="w-12 h-12 rounded-lg object-cover" alt="" />
+                        <div className="w-14 h-14 rounded-2xl overflow-hidden shadow-sm">
+                          <img src={recipe.image} className="w-full h-full object-cover" alt="" />
+                        </div>
                       ) : (
-                        <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center text-primary font-bold">
+                        <div className="w-14 h-14 bg-slate-50 text-slate-400 group-hover:bg-emerald-50 group-hover:text-emerald-600 rounded-2xl flex items-center justify-center font-black text-xl transition-colors">
                           {recipe.title[0]}
                         </div>
                       )}
-                      <span className="font-bold">{recipe.title}</span>
+                      <span className="font-black text-slate-900 text-lg group-hover:text-emerald-600 transition-colors tracking-tight">{recipe.title}</span>
                     </div>
                   </td>
-                  <td className="px-6 py-4">
-                    <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-xs font-bold uppercase">
+                  <td className="px-8 py-6">
+                    <span className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[10px] font-black uppercase tracking-widest leading-none">
                       {recipe.category}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-sm text-text-muted">Local Database</td>
-                  <td className="px-6 py-4 text-right">
-                    <div className="flex items-center justify-end gap-2">
+                  <td className="px-8 py-6">
+                    <div className="flex items-center gap-2 text-sm font-bold text-slate-400">
+                      <div className="w-2 h-2 rounded-full bg-emerald-400"></div>
+                      Local Database
+                    </div>
+                  </td>
+                  <td className="px-8 py-6 text-right">
+                    <div className="flex items-center justify-end gap-3 text-slate-400">
                       <Link 
                         to={`/recipe/${recipe.id}`}
-                        className="p-2 hover:bg-primary/10 text-primary rounded-lg transition-colors"
+                        className="w-10 h-10 flex items-center justify-center hover:bg-emerald-50 hover:text-emerald-500 rounded-xl transition-all"
                         title="View Details"
                       >
                         <ExternalLink size={18} />
                       </Link>
                       <button 
-                        className="p-2 hover:bg-yellow-500/10 text-yellow-500 rounded-lg transition-colors"
+                        className="w-10 h-10 flex items-center justify-center hover:bg-amber-50 hover:text-amber-500 rounded-xl transition-all"
                         title="Edit Recipe"
                       >
                         <Edit2 size={18} />
                       </button>
                       <button 
                         onClick={() => handleDelete(recipe.id)}
-                        className="p-2 hover:bg-red-500/10 text-red-500 rounded-lg transition-colors"
+                        className="w-10 h-10 flex items-center justify-center hover:bg-rose-50 hover:text-rose-500 rounded-xl transition-all"
                         title="Delete Recipe"
                       >
                         <Trash2 size={18} />
@@ -111,8 +123,8 @@ const ManageRecipes = () => {
                 </tr>
               )) : (
                 <tr>
-                   <td colSpan="4" className="px-6 py-20 text-center text-text-muted italic">
-                      No recipes found matching your search.
+                   <td colSpan="4" className="px-8 py-24 text-center text-slate-400 font-medium italic">
+                      No recipes found matching your search criteria.
                    </td>
                 </tr>
               )}
@@ -125,3 +137,4 @@ const ManageRecipes = () => {
 };
 
 export default ManageRecipes;
+

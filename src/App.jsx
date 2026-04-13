@@ -4,6 +4,7 @@ import { Toaster } from "react-hot-toast";
 
 // Components
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 
 // Pages
 import Home from "./pages/Home";
@@ -26,40 +27,45 @@ function App() {
       <Toaster 
         position="top-right"
         toastOptions={{
-          className: 'glass',
-          duration: 3000,
+          className: 'premium-toast',
+          duration: 4000,
           style: {
-            background: 'var(--bg-card)',
-            color: 'var(--text-main)',
-            border: '1px solid var(--border)',
+            background: '#ffffff',
+            color: '#1e293b',
+            border: '1px solid #f1f5f9',
             fontWeight: '600',
-            borderRadius: '16px',
+            borderRadius: '24px',
+            padding: '16px 24px',
           },
         }}
       />
       
-      <Navbar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
-      
-      <main className="main-content">
-        <Routes>
-          {/* Main Application Routes */}
-          <Route path="/" element={<Home searchQuery={searchQuery} setSearchQuery={setSearchQuery} />} />
-          <Route path="/favorites" element={<Favorites />} />
-          <Route path="/recipe/:id" element={<RecipeDetails />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+      <div className="flex flex-col min-h-screen">
+        <Navbar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+        
+        <main className="flex-1">
+          <Routes>
+            {/* Main Application Routes */}
+            <Route path="/" element={<Home searchQuery={searchQuery} setSearchQuery={setSearchQuery} />} />
+            <Route path="/favorites" element={<Favorites />} />
+            <Route path="/recipe/:id" element={<RecipeDetails />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
 
-          {/* Admin Protected Routes */}
-          <Route path="/admin" element={<AdminLayout />}>
-            <Route index element={<AdminDashboard />} />
-            <Route path="add-recipe" element={<AddRecipe />} />
-            <Route path="manage" element={<ManageRecipes />} />
-          </Route>
+            {/* Admin Protected Routes */}
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<AdminDashboard />} />
+              <Route path="add-recipe" element={<AddRecipe />} />
+              <Route path="manage" element={<ManageRecipes />} />
+            </Route>
 
-          {/* Fallback */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </main>
+            {/* Fallback */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </main>
+
+        <Footer />
+      </div>
     </BrowserRouter>
   );
 }

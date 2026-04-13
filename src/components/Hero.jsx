@@ -2,29 +2,38 @@ import React from 'react';
 
 const Hero = () => {
   return (
-    <div className="relative py-24 md:py-32 w-full flex items-center justify-center overflow-hidden bg-bg-main border-b border-border">
-      {/* Decorative Background Elements */}
-      <div className="absolute top-0 left-1/4 w-64 h-64 bg-primary/5 rounded-full blur-3xl -translate-y-1/2"></div>
-      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-secondary/5 rounded-full blur-3xl translate-y-1/2"></div>
+    <div className="relative py-20 md:py-32 bg-white border-b border-slate-50 overflow-hidden">
+      {/* Background decoration */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[1400px] h-full pointer-events-none">
+        <div className="absolute top-[-10%] left-[10%] w-[30%] h-[40%] bg-emerald-50/50 rounded-full blur-[100px]"></div>
+        <div className="absolute bottom-[10%] right-[10%] w-[25%] h-[35%] bg-amber-50/50 rounded-full blur-[100px]"></div>
+      </div>
 
-      {/* Content */}
-      <div className="relative z-10 container text-center space-y-8 animate-fade">
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-bold uppercase tracking-wider mb-2">
-          <span>🍕</span> Over 5,000+ Recipes
+      <div className="container-saas relative z-10 text-center animate-fade">
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-50 text-emerald-600 text-xs font-bold uppercase tracking-widest mb-8">
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+          </span>
+          Discover 5,000+ hand-picked recipes
         </div>
         
-        <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight max-w-4xl mx-auto">
-          Discover <span className="text-primary">Delicious</span> Recipes <br /> 
-          for Every Occasion
+        <h1 className="text-5xl md:text-7xl font-black text-slate-900 leading-[1.1] mb-8 max-w-4xl mx-auto">
+          Cook Like a <span className="text-emerald-500">Pro</span> <br /> 
+          with our curated recipes
         </h1>
         
-        <p className="text-xl md:text-2xl text-text-muted max-w-2xl mx-auto leading-relaxed">
-          The most comprehensive collection of hand-picked recipes from around the world. Start your culinary journey today.
+        <p className="text-xl text-slate-500 max-w-2xl mx-auto leading-relaxed mb-12">
+          From quick 15-minute meals to elaborate gourmet feasts, find everything you need to create magic in your kitchen.
         </p>
 
-        <div className="flex flex-wrap items-center justify-center gap-4 pt-6">
-          <button className="btn btn-primary btn-pill px-10 h-14 text-lg">Browse Categories</button>
-          <button className="btn btn-outline btn-pill px-10 h-14 text-lg">Top Rated</button>
+        <div className="flex flex-wrap items-center justify-center gap-4">
+          <button className="btn-primary h-14 px-10 text-lg shadow-emerald-200">
+            Browse All Recipes
+          </button>
+          <button className="btn-outline h-14 px-10 text-lg">
+            How it works
+          </button>
         </div>
       </div>
     </div>
@@ -32,4 +41,5 @@ const Hero = () => {
 };
 
 export default Hero;
+
 

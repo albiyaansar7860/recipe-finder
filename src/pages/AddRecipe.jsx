@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { ChefHat, Image as ImageIcon, Sparkles, Plus, AlertCircle } from 'lucide-react';
+import { ChefHat, Image as ImageIcon, Sparkles, Plus, AlertCircle, ArrowLeft } from 'lucide-react';
 import { recipeService } from '../services/api';
 import { toast } from 'react-hot-toast';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const AddRecipe = () => {
   const [recipe, setRecipe] = useState({
@@ -27,35 +27,38 @@ const AddRecipe = () => {
   };
 
   return (
-    <div className="max-w-4xl animate-fade-in">
-      <div className="flex items-center gap-4 mb-10">
-        <div className="p-3 bg-primary/10 text-primary rounded-2xl">
-          <ChefHat size={32} />
+    <div className="max-w-4xl mx-auto animate-fade">
+      <div className="flex items-center gap-6 mb-12">
+        <div className="w-20 h-20 bg-emerald-50 text-emerald-600 rounded-[32px] flex items-center justify-center shadow-sm">
+          <ChefHat size={40} />
         </div>
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight">Create New Recipe</h1>
-          <p className="text-text-muted">Share your culinary masterpiece with the world.</p>
+           <Link to="/admin" className="inline-flex items-center gap-2 text-emerald-600 font-bold hover:gap-3 transition-all mb-1">
+             <ArrowLeft size={16} /> Back to Dashboard
+           </Link>
+          <h1 className="text-4xl font-black text-slate-900 tracking-tight">Create New Recipe</h1>
+          <p className="text-slate-500 font-medium text-lg">Share your culinary masterpiece with the world.</p>
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-8">
-        <div className="bg-bg-card border border-border rounded-3xl p-8 shadow-sm space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <label className="text-sm font-bold ml-1">Recipe Title *</label>
+      <form onSubmit={handleSubmit} className="space-y-10">
+        <div className="bg-white border border-slate-100 rounded-[48px] p-10 md:p-12 shadow-sm space-y-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="space-y-3">
+              <label className="text-sm font-bold text-slate-700 ml-1 uppercase tracking-widest block text-left font-black">Recipe Title *</label>
               <input
                 type="text"
-                className="w-full h-12 px-4 bg-bg-main border border-border rounded-xl focus:ring-2 focus:ring-primary outline-none transition-all"
+                className="w-full h-14 px-6 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 focus:bg-white outline-none transition-all font-bold text-slate-700"
                 placeholder="e.g. Grandma's Secret Pasta"
                 value={recipe.title}
                 onChange={(e) => setRecipe({...recipe, title: e.target.value})}
               />
             </div>
 
-            <div className="space-y-2">
-              <label className="text-sm font-bold ml-1">Category</label>
+            <div className="space-y-3">
+              <label className="text-sm font-bold text-slate-700 ml-1 uppercase tracking-widest block text-left font-black">Category</label>
               <select
-                className="w-full h-12 px-4 bg-bg-main border border-border rounded-xl focus:ring-2 focus:ring-primary outline-none transition-all"
+                className="w-full h-14 px-6 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 focus:bg-white outline-none transition-all font-bold text-slate-700 appearance-none"
                 value={recipe.category}
                 onChange={(e) => setRecipe({...recipe, category: e.target.value})}
               >
@@ -71,60 +74,60 @@ const AddRecipe = () => {
             </div>
           </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-bold ml-1 flex items-center gap-2">
-              <ImageIcon size={16} /> Image URL
+          <div className="space-y-3">
+            <label className="text-sm font-bold text-slate-700 ml-1 uppercase tracking-widest block text-left font-black flex items-center gap-2">
+              <ImageIcon size={18} /> Image URL
             </label>
             <input
               type="url"
-              className="w-full h-12 px-4 bg-bg-main border border-border rounded-xl focus:ring-2 focus:ring-primary outline-none transition-all"
-              placeholder="https://example.com/image.jpg"
+              className="w-full h-14 px-6 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 focus:bg-white outline-none transition-all font-bold text-slate-700"
+              placeholder="https://images.unsplash.com/photo-..."
               value={recipe.image}
               onChange={(e) => setRecipe({...recipe, image: e.target.value})}
             />
           </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-bold ml-1 flex items-center gap-2">
-              <Sparkles size={16} className="text-primary" /> Ingredients (comma separated) *
+          <div className="space-y-3">
+            <label className="text-sm font-bold text-slate-700 ml-1 uppercase tracking-widest block text-left font-black flex items-center gap-2">
+              <Sparkles size={18} className="text-emerald-500" /> Ingredients (comma separated) *
             </label>
             <textarea
-              className="w-full min-h-[120px] p-4 bg-bg-main border border-border rounded-xl focus:ring-2 focus:ring-primary outline-none transition-all resize-none"
+              className="w-full min-h-[140px] p-6 bg-slate-50 border border-slate-100 rounded-3xl focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 focus:bg-white outline-none transition-all resize-none font-bold text-slate-700"
               placeholder="e.g. 2 cups flour, 1 egg, 1/2 cup milk..."
               value={recipe.ingredients}
               onChange={(e) => setRecipe({...recipe, ingredients: e.target.value})}
             ></textarea>
           </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-bold ml-1">Instructions *</label>
+          <div className="space-y-3">
+            <label className="text-sm font-bold text-slate-700 ml-1 uppercase tracking-widest block text-left font-black">Cooking Instructions *</label>
             <textarea
-              className="w-full min-h-[200px] p-4 bg-bg-main border border-border rounded-xl focus:ring-2 focus:ring-primary outline-none transition-all resize-none"
-              placeholder="Step by step instructions..."
+              className="w-full min-h-[220px] p-6 bg-slate-50 border border-slate-100 rounded-3xl focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 focus:bg-white outline-none transition-all resize-none font-bold text-slate-700"
+              placeholder="Step by step instructions to make the dish..."
               value={recipe.instructions}
               onChange={(e) => setRecipe({...recipe, instructions: e.target.value})}
             ></textarea>
           </div>
           
-          <div className="bg-primary/5 p-4 rounded-xl flex items-start gap-4 text-primary text-sm">
+          <div className="bg-emerald-50/50 p-6 rounded-3xl flex items-start gap-4 text-emerald-700 border border-emerald-100">
              <AlertCircle className="shrink-0 mt-0.5" size={20} />
-             <p className="font-medium">Make sure your content is high-quality and includes accurate measurements for the best experience for your users.</p>
+             <p className="font-bold text-sm">Make sure your content is high-quality and includes accurate measurements. This ensures the best experience for your community.</p>
           </div>
         </div>
 
-        <div className="flex justify-end gap-4">
+        <div className="flex justify-end gap-6 items-center">
           <button 
             type="button" 
             onClick={() => navigate('/admin/manage')}
-            className="px-8 py-3 rounded-xl font-bold border border-border hover:bg-black/5 dark:hover:bg-white/5 transition-all"
+            className="text-slate-400 hover:text-slate-600 font-black uppercase tracking-widest transition-colors"
           >
-            Cancel
+            Cancel Changes
           </button>
           <button 
             type="submit" 
-            className="btn-primary flex items-center gap-2"
+            className="btn-primary h-16 px-12 text-lg shadow-emerald-200"
           >
-            <Plus size={20} /> Create Recipe
+            <Plus size={24} className="mr-2" /> Create Recipe
           </button>
         </div>
       </form>
@@ -133,3 +136,4 @@ const AddRecipe = () => {
 };
 
 export default AddRecipe;
+
