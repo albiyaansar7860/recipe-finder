@@ -19,10 +19,14 @@ const Login = () => {
       return;
     }
 
-    const { success, message } = authService.login(email, password);
+    const { success, message, user } = authService.login(email, password);
     if (success) {
-      toast.success('Welcome back!');
-      navigate('/');
+      toast.success(`Welcome back, ${user.name}!`);
+      if (user.role === 'admin') {
+        navigate('/admin');
+      } else {
+        navigate('/');
+      }
       window.location.reload(); 
     } else {
       setError(message);

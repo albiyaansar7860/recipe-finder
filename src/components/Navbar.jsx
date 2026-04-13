@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Search, Heart, Menu, X, LogOut, User } from 'lucide-react';
+import { Search, Heart, Menu, X, LogOut, User, LayoutDashboard } from 'lucide-react';
 import { authService } from '../services/api';
 
 const Navbar = ({ searchQuery, setSearchQuery }) => {
@@ -61,6 +61,11 @@ const Navbar = ({ searchQuery, setSearchQuery }) => {
             <Link to="/favorites" className={`flex items-center gap-1.5 font-semibold transition-colors ${location.pathname === '/favorites' ? 'text-emerald-600' : 'text-slate-600 hover:text-emerald-600'}`}>
               <Heart size={18} /> Favorites
             </Link>
+            {user?.role === 'admin' && (
+              <Link to="/admin" className={`flex items-center gap-1.5 font-semibold transition-colors ${location.pathname.startsWith('/admin') ? 'text-emerald-600' : 'text-slate-600 hover:text-emerald-600'}`}>
+                <LayoutDashboard size={18} /> Admin Hub
+              </Link>
+            )}
           </div>
 
           <div className="hidden sm:flex items-center gap-3">
@@ -122,21 +127,34 @@ const Navbar = ({ searchQuery, setSearchQuery }) => {
             </div>
 
             <nav className="flex flex-col gap-4">
-              <Link to="/" onClick={() => setIsMenuOpen(false)} className="font-bold text-slate-700 hover:text-emerald-600">Home</Link>
-              <Link to="/favorites" onClick={() => setIsMenuOpen(false)} className="font-bold text-slate-700 hover:text-emerald-600">Favorites</Link>
+              <Link to="/" onClick={() => setIsMenuOpen(false)} className={`font-bold transition-colors ${location.pathname === '/' ? 'text-emerald-600' : 'text-slate-700 hover:text-emerald-600'}`}>Home</Link>
+              <Link to="/favorites" onClick={() => setIsMenuOpen(false)} className={`font-bold transition-colors ${location.pathname === '/favorites' ? 'text-emerald-600' : 'text-slate-700 hover:text-emerald-600'}`}>Favorites</Link>
+              {user?.role === 'admin' && (
+                <Link to="/admin" onClick={() => setIsMenuOpen(false)} className={`font-bold transition-colors ${location.pathname.startsWith('/admin') ? 'text-emerald-600' : 'text-slate-700 hover:text-emerald-600'}`}>Admin Hub</Link>
+              )}
             </nav>
 
             <div className="mt-auto flex flex-col gap-3">
-              {!user && (
+              {!user ? (
                 <>
-                  <Link to="/login" onClick={() => setIsMenuOpen(false)} className="btn-outline w-full">Login</Link>
-                  <Link to="/register" onClick={() => setIsMenuOpen(false)} className="btn-primary w-full">Register</Link>
+                  <Link to="/login" onClick={() => setIsMenuOpen(false)} className="px-4 py-3 text-center font-bold text-slate-700 border border-slate-200 rounded-xl hover:bg-slate-50 transition-all">Login</Link>
+                  <Link to="/register" onClick={() => setIsMenuOpen(false)} className="btn-primary w-full py-3 h-auto">Register</Link>
                 </>
-              )}
-              {user && (
-                <button onClick={handleLogout} className="flex items-center justify-center gap-2 p-3 text-red-500 font-bold border border-red-100 rounded-xl hover:bg-red-50">
-                  <LogOut size={18} /> Logout
-                </button>
+              ) : (
+                <div className="flex flex-col gap-3">
+                   <div className="flex items-center gap-3 p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                      <div className="w-10 h-10 rounded-full bg-emerald-500 text-white flex items-center justify-center font-black">
+                        {user.name.charAt(0).toUpperCase()}
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-sm font-black text-slate-900 leading-none">{user.name}</span>
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">{user.role}</span>
+                      </div>
+                   </div>
+                   <button onClick={handleLogout} className="flex items-center justify-center gap-2 p-4 text-red-500 font-bold border border-red-100 rounded-2xl hover:bg-red-50 transition-all">
+                    <LogOut size={18} /> Logout
+                   </button>
+                </div>
               )}
             </div>
           </div>

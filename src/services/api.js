@@ -45,7 +45,7 @@ export const getRecipeById = async (id) => {
 
 // --- MOCK AUTH SERVICE ---
 const INITIAL_USERS = [
-  { id: 1, name: "Admin User", email: "admin@recipefinder.com", password: "admin123", role: "admin" }
+  { id: 1, name: "Admin", email: "admin@gmail.com", password: "123", role: "admin" }
 ];
 
 export const authService = {
