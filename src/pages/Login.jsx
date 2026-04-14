@@ -10,7 +10,7 @@ const Login = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
 
@@ -19,15 +19,14 @@ const Login = () => {
       return;
     }
 
-    const { success, message, user } = authService.login(email, password);
+    const { success, message, user } = await authService.login(email, password);
     if (success) {
-      toast.success(`Welcome back, ${user.name}!`);
+      toast.success(`Welcome back, ${user.name || 'User'}!`);
       if (user.role === 'admin') {
         navigate('/admin');
       } else {
         navigate('/');
       }
-      window.location.reload(); 
     } else {
       setError(message);
       toast.error(message);

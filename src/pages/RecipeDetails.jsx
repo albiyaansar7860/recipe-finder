@@ -3,9 +3,12 @@ import { useParams, Link } from 'react-router-dom';
 import { getRecipeById, recipeService } from '../services/api';
 import { Clock, Users, ChefHat, ArrowLeft, Heart, CheckCircle2, Share2, Printer, Sparkles, Flame } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useAuth } from '../context/AuthContext';
+import { toast } from 'react-hot-toast';
 
 const RecipeDetails = () => {
   const { id } = useParams();
+  const { userData, currentUser } = useAuth();
   const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isFavorite, setIsFavorite] = useState(false);
@@ -13,24 +16,38 @@ const RecipeDetails = () => {
   useEffect(() => {
     const fetchRecipe = async () => {
       setLoading(true);
-      if (id.startsWith('local_')) {
-        const custom = recipeService.getAll().find(r => r.id === id);
-        setRecipe(custom);
-      } else {
-        const data = await getRecipeById(id);
-        setRecipe(data);
+      try {
+        // Check if it's a Firestore ID (usually longer alphanumeric)
+        const customRecipes = await recipeService.getAll();
+        const custom = customRecipes.find(r => r.id === id);
+        
+        if (custom) {
+          setRecipe(custom);
+        } else {
+          const data = await getRecipeById(id);
+          setRecipe(data);
+        }
+      } catch (error) {
+        console.error('Error fetching recipe:', error);
+      } finally {
+        setLoading(false);
       }
-      
-      const favorites = recipeService.getFavorites();
-      setIsFavorite(favorites.includes(id));
-      setLoading(false);
     };
     fetchRecipe();
   }, [id]);
 
-  const toggleFavorite = () => {
-    recipeService.toggleFavorite(id);
-    setIsFavorite(!isFavorite);
+  useEffect(() => {
+    if (userData?.favorites) {
+      setIsFavorite(userData.favorites.includes(id));
+    }
+  }, [userData, id]);
+
+  const toggleFavorite = async () => {
+    if (!currentUser) {
+      toast.error('Please login to save favorites');
+      return;
+    }
+    await recipeService.toggleFavorite(currentUser.uid, id);
   };
 
   if (loading) return (
@@ -49,18 +66,27 @@ const RecipeDetails = () => {
     </div>
   );
 
-  const ingredients = [];
-  if (!id.startsWith('local_')) {
+  const ingredientsList = [];
+  // TheMealDB ID check (usually numeric strings)
+  const isApiRecipe = !isNaN(id);
+  
+  if (isApiRecipe) {
     for (let i = 1; i <= 20; i++) {
       const ingredient = recipe[`strIngredient${i}`];
       const measure = recipe[`strMeasure${i}`];
       if (ingredient && ingredient.trim()) {
-        ingredients.push({ ingredient, measure });
+        ingredientsList.push({ ingredient, measure });
       }
     }
   } else {
-    const parts = (recipe.ingredients || '').split(',');
-    parts.forEach(p => ingredients.push({ ingredient: p.trim(), measure: '' }));
+    // Firestore recipes store ingredients as arrays
+    const rawIngredients = recipe.ingredients || [];
+    if (Array.isArray(rawIngredients)) {
+      rawIngredients.forEach(p => ingredientsList.push({ ingredient: p.trim(), measure: '' }));
+    } else {
+      // Fallback for old data or string format
+      rawIngredients.split(',').forEach(p => ingredientsList.push({ ingredient: p.trim(), measure: '' }));
+    }
   }
 
   return (

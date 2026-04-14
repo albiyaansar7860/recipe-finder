@@ -1,4 +1,27 @@
 import axios from "axios";
+import { 
+  signInWithEmailAndPassword, 
+  createUserWithEmailAndPassword, 
+  signOut,
+  onAuthStateChanged
+} from "firebase/auth";
+import { 
+  collection, 
+  getDocs, 
+  addDoc, 
+  deleteDoc, 
+  doc, 
+  setDoc, 
+  getDoc, 
+  onSnapshot, 
+  query, 
+  orderBy,
+  serverTimestamp,
+  arrayUnion,
+  arrayRemove,
+  updateDoc
+} from "firebase/firestore";
+import { db, auth } from "./firebase";
 
 const BASE_URL = "https://www.themealdb.com/api/json/v1/1";
 
@@ -43,93 +66,101 @@ export const getRecipeById = async (id) => {
   }
 };
 
-// --- MOCK AUTH SERVICE ---
-const INITIAL_USERS = [
-  { id: 1, name: "Admin", email: "admin@gmail.com", password: "123", role: "admin" }
-];
-
+// --- FIREBASE AUTH SERVICE ---
 export const authService = {
-  login: (email, password) => {
-    let users = JSON.parse(localStorage.getItem("users"));
-    
-    // Seed default admin if no users exist
-    if (!users || users.length === 0) {
-      users = INITIAL_USERS;
-      localStorage.setItem("users", JSON.stringify(users));
+  login: async (email, password) => {
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      const userDoc = await getDoc(doc(db, "users", user.uid));
+      return { success: true, user: { ...user, ...userDoc.data() } };
+    } catch (error) {
+      return { success: false, message: error.message };
     }
-
-    const user = users.find(u => u.email === email && u.password === password);
-    if (user) {
-      localStorage.setItem("currentUser", JSON.stringify(user));
-      return { success: true, user };
-    }
-    return { success: false, message: "Invalid email or password" };
   },
   
-  register: (name, email, password, role = "user") => {
-    let users = JSON.parse(localStorage.getItem("users") || "[]");
-    
-    // Ensure initial users are present if empty
-    if (users.length === 0) {
-      users = [...INITIAL_USERS];
+  register: async (name, email, password, role = "user") => {
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      
+      // Store user role in Firestore
+      await setDoc(doc(db, "users", user.uid), {
+        name,
+        email,
+        role,
+        createdAt: serverTimestamp()
+      });
+      
+      return { success: true };
+    } catch (error) {
+      return { success: false, message: error.message };
     }
-
-    if (users.find(u => u.email === email)) {
-      return { success: false, message: "Email already registered" };
-    }
-    const newUser = { id: Date.now(), name, email, password, role }; 
-    users.push(newUser);
-    localStorage.setItem("users", JSON.stringify(users));
-    return { success: true };
   },
 
-  
-  getCurrentUser: () => JSON.parse(localStorage.getItem("currentUser")),
-  
-  logout: () => localStorage.removeItem("currentUser"),
+  logout: () => signOut(auth),
+
+  getUserRole: async (uid) => {
+    const userDoc = await getDoc(doc(db, "users", uid));
+    return userDoc.exists() ? userDoc.data().role : "user";
+  },
+
+  getAllUsers: async () => {
+    const snapshot = await getDocs(collection(db, "users"));
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  }
 };
 
-
-// --- LOCAL RECIPE SERVICE (For Admin) ---
+// --- FIRESTORE RECIPE SERVICE ---
 export const recipeService = {
-  getAll: () => JSON.parse(localStorage.getItem("customRecipes") || "[]"),
-  
-  add: (recipe) => {
-    const recipes = JSON.parse(localStorage.getItem("customRecipes") || "[]");
-    const newRecipe = { ...recipe, id: `local_${Date.now()}` };
-    recipes.push(newRecipe);
-    localStorage.setItem("customRecipes", JSON.stringify(recipes));
-    return newRecipe;
+  getAll: async () => {
+    const q = query(collection(db, "recipes"), orderBy("createdAt", "desc"));
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
   },
   
-  update: (id, updatedRecipe) => {
-    const recipes = JSON.parse(localStorage.getItem("customRecipes") || "[]");
-    const index = recipes.findIndex(r => r.id === id);
-    if (index !== -1) {
-      recipes[index] = { ...updatedRecipe, id };
-      localStorage.setItem("customRecipes", JSON.stringify(recipes));
-      return true;
-    }
-    return false;
+  add: async (recipe) => {
+    const newRecipe = {
+      ...recipe,
+      ingredients: typeof recipe.ingredients === 'string' 
+        ? recipe.ingredients.split(',').map(i => i.trim()) 
+        : recipe.ingredients,
+      createdAt: serverTimestamp()
+    };
+    const docRef = await addDoc(collection(db, "recipes"), newRecipe);
+    return { id: docRef.id, ...newRecipe };
   },
   
-  delete: (id) => {
-    const recipes = JSON.parse(localStorage.getItem("customRecipes") || "[]");
-    const filtered = recipes.filter(r => r.id !== id);
-    localStorage.setItem("customRecipes", JSON.stringify(filtered));
+  delete: async (id) => {
+    await deleteDoc(doc(db, "recipes", id));
   },
-  
-  toggleFavorite: (recipeId) => {
-    const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
-    const index = favorites.indexOf(recipeId);
-    if (index === -1) {
-      favorites.push(recipeId);
+
+  // Real-time synchronization
+  subscribeToRecipes: (callback) => {
+    const q = query(collection(db, "recipes"), orderBy("createdAt", "desc"));
+    return onSnapshot(q, (snapshot) => {
+      const recipes = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      callback(recipes);
+    });
+  },
+
+  toggleFavorite: async (userId, recipeId) => {
+    if (!userId) return;
+    const userRef = doc(db, "users", userId);
+    const userDoc = await getDoc(userRef);
+    const favorites = userDoc.data()?.favorites || [];
+    
+    if (favorites.includes(recipeId)) {
+      await updateDoc(userRef, { favorites: arrayRemove(recipeId) });
     } else {
-      favorites.splice(index, 1);
+      await updateDoc(userRef, { favorites: arrayUnion(recipeId) });
     }
-    localStorage.setItem("favorites", JSON.stringify(favorites));
-    return favorites;
   },
-  
-  getFavorites: () => JSON.parse(localStorage.getItem("favorites") || "[]"),
-};
+
+  getFavorites: async (userId) => {
+    if (!userId) return [];
+    const userDoc = await getDoc(doc(db, "users", userId));
+    return userDoc.data()?.favorites || [];
+  }
+};
+

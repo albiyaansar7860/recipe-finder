@@ -14,16 +14,20 @@ const AddRecipe = () => {
   });
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!recipe.title || !recipe.ingredients || !recipe.instructions) {
       toast.error('Please fill in all required fields');
       return;
     }
 
-    recipeService.add(recipe);
-    toast.success('Recipe added successfully!');
-    navigate('/admin/manage');
+    try {
+      await recipeService.add(recipe);
+      toast.success('Recipe added to cloud database!');
+      navigate('/admin/manage');
+    } catch (error) {
+      toast.error('Error saving recipe: ' + error.message);
+    }
   };
 
   return (

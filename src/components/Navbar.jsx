@@ -2,22 +2,21 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Search, Heart, Menu, X, LogOut, User, LayoutDashboard } from 'lucide-react';
 import { authService } from '../services/api';
+import { useAuth } from '../context/AuthContext';
 
 const Navbar = ({ searchQuery, setSearchQuery }) => {
-  const [user, setUser] = useState(null);
+  const { userData, currentUser } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
-  useEffect(() => {
-    setUser(authService.getCurrentUser());
-  }, []);
-
-  const handleLogout = () => {
-    authService.logout();
-    setUser(null);
+  const handleLogout = async () => {
+    await authService.logout();
     navigate('/login');
   };
+  
+  const user = userData;
+  const isAdmin = userData?.role === 'admin';
 
   const handleSearchKeyPress = (e) => {
     if (e.key === 'Enter') {
@@ -61,7 +60,7 @@ const Navbar = ({ searchQuery, setSearchQuery }) => {
             <Link to="/favorites" className={`flex items-center gap-1.5 font-semibold transition-colors ${location.pathname === '/favorites' ? 'text-emerald-600' : 'text-slate-600 hover:text-emerald-600'}`}>
               <Heart size={18} /> Favorites
             </Link>
-            {user?.role === 'admin' && (
+            {isAdmin && (
               <Link to="/admin" className={`flex items-center gap-1.5 font-semibold transition-colors ${location.pathname.startsWith('/admin') ? 'text-emerald-600' : 'text-slate-600 hover:text-emerald-600'}`}>
                 <LayoutDashboard size={18} /> Admin Hub
               </Link>
@@ -129,7 +128,7 @@ const Navbar = ({ searchQuery, setSearchQuery }) => {
             <nav className="flex flex-col gap-4">
               <Link to="/" onClick={() => setIsMenuOpen(false)} className={`font-bold transition-colors ${location.pathname === '/' ? 'text-emerald-600' : 'text-slate-700 hover:text-emerald-600'}`}>Home</Link>
               <Link to="/favorites" onClick={() => setIsMenuOpen(false)} className={`font-bold transition-colors ${location.pathname === '/favorites' ? 'text-emerald-600' : 'text-slate-700 hover:text-emerald-600'}`}>Favorites</Link>
-              {user?.role === 'admin' && (
+              {isAdmin && (
                 <Link to="/admin" onClick={() => setIsMenuOpen(false)} className={`font-bold transition-colors ${location.pathname.startsWith('/admin') ? 'text-emerald-600' : 'text-slate-700 hover:text-emerald-600'}`}>Admin Hub</Link>
               )}
             </nav>

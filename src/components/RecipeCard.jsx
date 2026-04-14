@@ -3,21 +3,30 @@ import { motion } from 'framer-motion';
 import { Heart, Clock, ChevronRight, ChefHat } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { recipeService } from '../services/api';
+import { toast } from 'react-hot-toast';
+
+import { useAuth } from '../context/AuthContext';
 
 const RecipeCard = ({ recipe }) => {
-  const [isFavorite, setIsFavorite] = useState(false);
+  const { userData, currentUser } = useAuth();
   const navigate = useNavigate();
   const id = recipe.idMeal || recipe.id;
+  const [isFavorite, setIsFavorite] = useState(false);
 
   useEffect(() => {
-    const favorites = recipeService.getFavorites();
-    setIsFavorite(favorites.includes(id));
-  }, [id]);
+    if (userData?.favorites) {
+      setIsFavorite(userData.favorites.includes(id));
+    }
+  }, [userData, id]);
 
-  const handleToggleFavorite = (e) => {
+  const handleToggleFavorite = async (e) => {
     e.stopPropagation();
-    recipeService.toggleFavorite(id);
-    setIsFavorite(!isFavorite);
+    if (!currentUser) {
+      toast.error('Please login to save favorites');
+      return;
+    }
+    await recipeService.toggleFavorite(currentUser.uid, id);
+    // State is updated automatically via onSnapshot in AuthContext
   };
 
   const goToDetails = () => {

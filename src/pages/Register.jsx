@@ -15,7 +15,7 @@ const Register = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
     setError('');
 
@@ -29,7 +29,7 @@ const Register = () => {
       return;
     }
 
-    const { success, message } = authService.register(
+    const { success, message } = await authService.register(
       formData.name, 
       formData.email, 
       formData.password,
@@ -38,7 +38,6 @@ const Register = () => {
     if (success) {
       toast.success('Registration successful! Welcome!');
       navigate('/');
-      window.location.reload(); 
     } else {
       setError(message);
       toast.error(message);

@@ -1,17 +1,28 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { BarChart3, Users, ChefHat, Heart, Star, Activity, TrendingUp, Package, Sparkles } from 'lucide-react';
 import { recipeService } from '../services/api';
+import { useAuth } from '../context/AuthContext';
 
 const AdminDashboard = () => {
-  const customRecipes = recipeService.getAll();
-  const favorites = recipeService.getFavorites();
+  const { userData } = useAuth();
+  const [customRecipes, setCustomRecipes] = useState([]);
+  const [stats, setStats] = useState([]);
 
-  const stats = [
-    { label: 'Total Recipes', value: 1240 + customRecipes.length, icon: <ChefHat size={24} />, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-    { label: 'Custom Recipes', value: customRecipes.length, icon: <Package size={24} />, color: 'text-blue-600', bg: 'bg-blue-50' },
-    { label: 'Community Savs', value: favorites.length + 42, icon: <Heart size={24} />, color: 'text-rose-600', bg: 'bg-rose-50' },
-    { label: 'Active Drafts', value: 3, icon: <Star size={24} />, color: 'text-amber-600', bg: 'bg-amber-50' },
-  ];
+  useEffect(() => {
+    const fetchStats = async () => {
+      const recipes = await recipeService.getAll();
+      setCustomRecipes(recipes);
+      
+      const newStats = [
+        { label: 'Total Recipes', value: 1240 + recipes.length, icon: <ChefHat size={24} />, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+        { label: 'Cloud Recipes', value: recipes.length, icon: <Package size={24} />, color: 'text-blue-600', bg: 'bg-blue-50' },
+        { label: 'Community Savs', value: 42, icon: <Heart size={24} />, color: 'text-rose-600', bg: 'bg-rose-50' },
+        { label: 'Active Drafts', value: 3, icon: <Star size={24} />, color: 'text-amber-600', bg: 'bg-amber-50' },
+      ];
+      setStats(newStats);
+    };
+    fetchStats();
+  }, []);
 
   return (
     <div className="space-y-12 animate-fade">

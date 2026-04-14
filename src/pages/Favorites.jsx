@@ -3,36 +3,48 @@ import RecipeCard from '../components/RecipeCard';
 import { getRecipeById, recipeService } from '../services/api';
 import { Heart, Loader2, Sparkles, ShoppingBag, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const Favorites = () => {
+  const { userData, loading: authLoading } = useAuth();
   const [favoriteRecipes, setFavoriteRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchFavorites = async () => {
+      if (!userData?.favorites) {
+        setFavoriteRecipes([]);
+        setLoading(false);
+        return;
+      }
+      
       setLoading(true);
-      const favoriteIds = recipeService.getFavorites();
-      const customRecipes = recipeService.getAll();
+      const favoriteIds = userData.favorites;
+      const customRecipes = await recipeService.getAll();
       
       const recipes = [];
       
-      // Fetch from MealDB
+      // Fetch from MealDB or Firestore
       for (const id of favoriteIds) {
-        if (!id.toString().startsWith('local_')) {
+        // If it's a numeric string, it's MealDB
+        if (!isNaN(id)) {
           const recipe = await getRecipeById(id);
           if (recipe) recipes.push(recipe);
+        } else {
+          // Check in custom recipes
+          const custom = customRecipes.find(r => r.id === id);
+          if (custom) recipes.push(custom);
         }
       }
       
-      // Filter from local custom recipes
-      const favoriteCustom = customRecipes.filter(r => favoriteIds.includes(r.id));
-      
-      setFavoriteRecipes([...recipes, ...favoriteCustom]);
+      setFavoriteRecipes(recipes);
       setLoading(false);
     };
 
-    fetchFavorites();
-  }, []);
+    if (!authLoading) {
+      fetchFavorites();
+    }
+  }, [userData, authLoading]);
 
   return (
     <div className="bg-bg-main min-h-[calc(100vh-70px)]">

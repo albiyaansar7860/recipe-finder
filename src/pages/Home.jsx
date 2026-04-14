@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Hero from '../components/Hero';
 import CategoryCard from '../components/CategoryCard';
 import RecipeCard from '../components/RecipeCard';
-import { getCategories, searchRecipes, getRecipesByCategory } from '../services/api';
+import { getCategories, searchRecipes, getRecipesByCategory, recipeService } from '../services/api';
 import { Loader2, ChefHat, Sparkles, Filter, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const Home = ({ searchQuery, setSearchQuery }) => {
@@ -18,8 +18,11 @@ const Home = ({ searchQuery, setSearchQuery }) => {
       const cats = await getCategories();
       setCategories(cats);
       
-      const initialRecipes = await searchRecipes(searchQuery);
-      setRecipes(initialRecipes.slice(0, 12));
+      const localRecipes = await recipeService.getAll();
+      const apiRecipes = await searchRecipes(searchQuery);
+      
+      // Combine local and API recipes
+      setRecipes([...localRecipes, ...apiRecipes.slice(0, 12)]);
       setLoading(false);
     };
     initData();
@@ -31,11 +34,14 @@ const Home = ({ searchQuery, setSearchQuery }) => {
     setSearchQuery('');
     
     if (category === 'All') {
+      const localRecipes = await recipeService.getAll();
       const results = await searchRecipes('');
-      setRecipes(results.slice(0, 12));
+      setRecipes([...localRecipes, ...results.slice(0, 12)]);
     } else {
+      const allLocal = await recipeService.getAll();
+      const filteredLocal = allLocal.filter(r => r.category === category);
       const results = await getRecipesByCategory(category);
-      setRecipes(results);
+      setRecipes([...filteredLocal, ...results]);
     }
     setLoading(false);
   };
