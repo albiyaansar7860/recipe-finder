@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, User, UserPlus, AlertCircle, ArrowLeft, Sparkles, Wrench, ShieldCheck } from 'lucide-react';
 import { authService } from '../services/api';
+import { useAuth } from '../hooks/useAuth';
 import { toast } from 'react-hot-toast';
 
 const Register = () => {
@@ -14,6 +15,19 @@ const Register = () => {
   });
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const { currentUser, userData, loading } = useAuth();
+
+  useEffect(() => {
+    if (!loading && currentUser && userData) {
+      if (userData.role === 'admin') {
+        navigate('/admin/manage');
+      } else {
+        navigate('/');
+      }
+    }
+  }, [currentUser, userData, loading, navigate]);
+
+  if (loading) return null; // Prevent flicker
 
   const handleRegister = async (e) => {
     e.preventDefault();
