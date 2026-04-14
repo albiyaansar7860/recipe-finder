@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { recipeService } from '../services/api';
 import { toast } from 'react-hot-toast';
 
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 
 const RecipeCard = ({ recipe }) => {
   const { userData, currentUser } = useAuth();

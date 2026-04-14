@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BarChart3, Users, ChefHat, Heart, Star, Activity, TrendingUp, Package, Sparkles } from 'lucide-react';
 import { recipeService } from '../services/api';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 
 const AdminDashboard = () => {
   const { userData } = useAuth();

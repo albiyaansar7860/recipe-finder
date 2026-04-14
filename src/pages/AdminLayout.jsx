@@ -3,7 +3,7 @@ import { Link, useNavigate, Outlet, useLocation } from 'react-router-dom';
 import { LayoutDashboard, PlusCircle, Settings, LogOut, ChevronRight, BarChart3, Package, Users } from 'lucide-react';
 import { authService } from '../services/api';
 import { toast } from 'react-hot-toast';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 
 const AdminLayout = () => {
   const navigate = useNavigate();

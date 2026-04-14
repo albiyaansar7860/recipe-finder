@@ -3,7 +3,7 @@ import RecipeCard from '../components/RecipeCard';
 import { getRecipeById, recipeService } from '../services/api';
 import { Heart, Loader2, Sparkles, ShoppingBag, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 
 const Favorites = () => {
   const { userData, loading: authLoading } = useAuth();

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Search, Heart, Menu, X, LogOut, User, LayoutDashboard } from 'lucide-react';
 import { authService } from '../services/api';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 
 const Navbar = ({ searchQuery, setSearchQuery }) => {
   const { userData, currentUser } = useAuth();

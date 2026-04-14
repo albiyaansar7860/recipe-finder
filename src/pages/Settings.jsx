@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Settings as SettingsIcon, ShieldCheck, Mail, Calendar, User, Bell, Lock } from 'lucide-react';
 import { authService } from '../services/api';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 
 const Settings = () => {
   const { userData, loading } = useAuth();

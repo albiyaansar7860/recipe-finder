@@ -1,6 +1,6 @@
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 
 const ProtectedRoute = ({ children, adminOnly = false }) => {
   const { currentUser, userData, loading, isAdmin } = useAuth();
@@ -21,10 +21,9 @@ const ProtectedRoute = ({ children, adminOnly = false }) => {
   }
 
   // Admin required but user is not admin
-  if (adminOnly && !isAdmin) {
-    // Standardizing to /login as per requested protection rule
-    // (though / could also be a valid destination, prompt said redirect to /login)
-    return <Navigate to="/login" replace />;
+  if (adminOnly && (!userData || !isAdmin)) {
+    // If logged in but not admin, redirect to home instead of login to avoid loop
+    return <Navigate to="/" replace />;
   }
 
   return children;
