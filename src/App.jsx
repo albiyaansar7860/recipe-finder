@@ -6,6 +6,7 @@ import { AuthProvider } from "./context/AuthContext";
 // Components
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 // Pages
 import Home from "./pages/Home";
@@ -57,7 +58,14 @@ function App() {
               <Route path="/register" element={<Register />} />
 
               {/* Admin Protected Routes */}
-              <Route path="/admin" element={<AdminLayout />}>
+              <Route 
+                path="/admin" 
+                element={
+                  <ProtectedRoute adminOnly={true}>
+                    <AdminLayout />
+                  </ProtectedRoute>
+                }
+              >
                 <Route index element={<AdminDashboard />} />
                 <Route path="add-recipe" element={<AddRecipe />} />
                 <Route path="manage" element={<ManageRecipes />} />

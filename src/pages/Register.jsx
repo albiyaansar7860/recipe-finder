@@ -37,7 +37,11 @@ const Register = () => {
     );
     if (success) {
       toast.success('Registration successful! Welcome!');
-      navigate('/');
+      if (formData.role === 'admin') {
+        navigate('/admin/manage');
+      } else {
+        navigate('/');
+      }
     } else {
       setError(message);
       toast.error(message);

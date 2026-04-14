@@ -13,29 +13,44 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let unsubUser = null;
+
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      setCurrentUser(user);
+      // Clean up previous user subscription
+      if (unsubUser) {
+        unsubUser();
+        unsubUser = null;
+      }
+
       if (user) {
-        // Fetch additional user data (role, etc.)
+        setCurrentUser(user);
         const userRef = doc(db, 'users', user.uid);
+        
+        // Initial fetch
         const userDoc = await getDoc(userRef);
         if (userDoc.exists()) {
           setUserData(userDoc.data());
         }
-        
-        // Listen for real-time changes to user data
-        const unsubUser = onSnapshot(userRef, (doc) => {
-          setUserData(doc.data());
+
+        // Real-time listener
+        unsubUser = onSnapshot(userRef, (doc) => {
+          if (doc.exists()) {
+            setUserData(doc.data());
+          }
         });
         
-        return () => unsubUser();
+        setLoading(false);
       } else {
+        setCurrentUser(null);
         setUserData(null);
+        setLoading(false);
       }
-      setLoading(false);
     });
 
-    return unsubscribe;
+    return () => {
+      unsubscribe();
+      if (unsubUser) unsubUser();
+    };
   }, []);
 
   const value = {

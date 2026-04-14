@@ -23,7 +23,7 @@ const Login = () => {
     if (success) {
       toast.success(`Welcome back, ${user.name || 'User'}!`);
       if (user.role === 'admin') {
-        navigate('/admin');
+        navigate('/admin/manage');
       } else {
         navigate('/');
       }

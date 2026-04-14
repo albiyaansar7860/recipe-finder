@@ -72,7 +72,14 @@ export const authService = {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-      const userDoc = await getDoc(doc(db, "users", user.uid));
+      const userRef = doc(db, "users", user.uid);
+      const userDoc = await getDoc(userRef);
+      
+      if (!userDoc.exists()) {
+        await signOut(auth); // Sign out if role is missing for security
+        return { success: false, message: "User role not found. Please register again." };
+      }
+      
       return { success: true, user: { ...user, ...userDoc.data() } };
     } catch (error) {
       return { success: false, message: error.message };

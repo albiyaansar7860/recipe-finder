@@ -8,16 +8,8 @@ import { useAuth } from '../context/AuthContext';
 const AdminLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { userData, isAdmin, loading } = useAuth();
+  const { userData } = useAuth();
 
-  useEffect(() => {
-    if (!loading && !isAdmin) {
-      navigate('/login');
-    }
-  }, [isAdmin, loading, navigate]);
-
-  if (loading || !isAdmin) return null;
-  
   const user = userData;
 
   const menuItems = [
