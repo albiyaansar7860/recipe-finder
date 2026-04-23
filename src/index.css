@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-bg-main text-text-main font-sans antialiased overflow-x-hidden transition-colors;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold tracking-tight text-text-main;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center px-6 py-2.5 bg-primary text-white font-bold rounded-xl transition-all hover:bg-primary-hover active:scale-95 shadow-sm hover:shadow-md;
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center justify-center px-6 py-2.5 bg-transparent text-text-main font-bold border border-border rounded-xl transition-all hover:bg-bg-main active:scale-95;
+  }
+
+  .input-pill {
+    @apply w-full h-11 pl-11 pr-4 bg-bg-main border border-border rounded-full outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all font-medium;
+  }
+}
+
+/* Custom Utilities */
+.container-saas {
+  @apply max-w-[1200px] mx-auto px-6 md:px-8;
+}
+
+.glass {
+  @apply bg-white/80 backdrop-blur-md border-b border-border;
+}
+
+/* Animations */
+.animate-fade {
+  animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+
