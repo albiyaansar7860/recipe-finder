@@ -164,7 +164,12 @@ const RecipeDetails = () => {
               </div>
 
               <div className="flex items-center gap-4 pt-4">
-                <button className="btn-primary h-14 px-10 text-lg shadow-emerald-200">Start Cooking</button>
+                <button 
+                  onClick={() => document.getElementById('ingredients').scrollIntoView({ behavior: 'smooth' })}
+                  className="btn-primary h-14 px-10 text-lg shadow-emerald-200"
+                >
+                  Start Cooking
+                </button>
                 <div className="flex gap-2">
                   <button className="p-3.5 rounded-full bg-white border border-slate-100 hover:border-emerald-200 hover:text-emerald-500 transition-all text-slate-400">
                     <Share2 size={22} />
@@ -182,7 +187,7 @@ const RecipeDetails = () => {
       <div className="container-saas mt-16 md:mt-24">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
           {/* Ingredients Column */}
-          <div className="lg:col-span-4 space-y-8 animate-fade" style={{ animationDelay: '0.2s' }}>
+          <div id="ingredients" className="lg:col-span-4 space-y-8 animate-fade" style={{ animationDelay: '0.2s' }}>
             <div className="bg-white border border-slate-100 rounded-[48px] p-8 md:p-10 shadow-sm sticky top-32">
               <h3 className="text-2xl font-black text-slate-900 mb-8 flex items-center gap-3 pb-4 border-b border-slate-50">
                 <Sparkles className="text-emerald-500" /> Ingredients
